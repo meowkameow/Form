@@ -3,10 +3,22 @@ import './App.css';
 import React  from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from "yup";
+
+const schema = yup.object({
+   firstName: yup.string().min(2,"Имя должно не менее двух букв").required("Обязательное поле"),
+   lastName: yup.string().min(2,"Фамилия должна содержать не менее двух букв").required("Обязательное поле"),
+   email: yup.string().email('Неверная почта').required("Обязательное поле"),
+   password: yup.string().min(6,"Пароль должен содержать не менее 6 символов").required("Обязательное поле"),
+}).required();
 
 function App() {
-    const { register, handleSubmit, watch, formState: { errors } } = useForm();
+    const { register, handleSubmit, watch, formState: { errors } } = useForm({
+        resolver: yupResolver(schema)
+    });
     const onSubmit = (values) => console.log(values);
+
 
     console.log(errors);
 
@@ -14,29 +26,25 @@ function App() {
   return (
     <div className="App"> 
       <div className='row'>
-          <TextField name = 'firstName' className='textInput' defaultValue="test"
-                     {...register("firstName",
-                         { required: 'Обязательное поле'})}
-                        helperText={errors.firstName && errors.firstName.message}
-                        error={!!errors.firstName}
+          <TextField name = 'firstName' className='textInput'
+                     {...register(("firstName"))}
+                     helperText={errors.firstName && errors.firstName.message}
+                     error={!!errors.firstName}
                      label="Имя" fullWidth />
           <TextField name = 'lastName' className='textInput'
-                     {...register("lastName",
-                         { required: 'Обязательное поле'})}
+                     {...register(("lastName"))}
                      helperText={errors.lastName && errors.lastName.message}
                      error={!!errors.lastName}
                      label="Фамилия" fullWidth />
       </div>
       <div className='row'>
           <TextField name = 'email' className='textInput'
-                     {...register("email",
-                         { required: 'Обязательное поле'})}
+                     {...register(("email"))}
                      helperText={errors.email && errors.email.message}
                      error={!!errors.email}
                      label="Email" fullWidth />
           <TextField type='password' name = 'password' className='textInput'
-                     {...register("password",
-                         { required: 'Обязательное поле'})}
+                     {...register(("password"))}
                      helperText={errors.password && errors.password.message}
                      error={!!errors.password}
                      label="Пароль" fullWidth />
